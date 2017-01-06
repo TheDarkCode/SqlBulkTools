@@ -59,6 +59,7 @@ namespace SqlBulkTools
         /// </summary>
         /// <param name="columnName"></param>
         /// <returns></returns>
+        /// <exception cref="NullReferenceException"></exception>
         public BulkInsertOrUpdate<T> MatchTargetOn(Expression<Func<T, object>> columnName)
         {
             var propertyName = BulkOperationsHelper.GetPropertyName(columnName);
@@ -67,6 +68,25 @@ namespace SqlBulkTools
                 throw new NullReferenceException("MatchTargetOn column name can't be null.");
 
             _matchTargetOn.Add(propertyName);
+
+            return this;
+        }
+
+        /// <summary>
+        /// At least one MatchTargetOn is required for correct configuration. MatchTargetOn is the matching clause for evaluating 
+        /// each row in table. This is usally set to the unique identifier in the table (e.g. Id). Multiple MatchTargetOn members are allowed 
+        /// for matching composite relationships. 
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <returns></returns>
+        /// <exception cref="NullReferenceException"></exception>
+        public BulkInsertOrUpdate<T> MatchTargetOn(string columnName)
+        {
+
+            if (columnName == null)
+                throw new NullReferenceException("MatchTargetOn column name can't be null.");
+
+            _matchTargetOn.Add(columnName);
 
             return this;
         }
@@ -88,9 +108,34 @@ namespace SqlBulkTools
         /// following conditions is met: (1) MatchTargetOn list contains an identity column (2) AddAllColumns is used in setup. 
         /// </summary>
         /// <param name="columnName"></param>
+        /// <returns></returns>
+        public BulkInsertOrUpdate<T> SetIdentityColumn(string columnName)
+        {
+            SetIdentity(columnName);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the identity column for the table. Required if an Identity column exists in table and one of the two 
+        /// following conditions is met: (1) MatchTargetOn list contains an identity column (2) AddAllColumns is used in setup. 
+        /// </summary>
+        /// <param name="columnName"></param>
         /// <param name="outputIdentity"></param>
         /// <returns></returns>
         public BulkInsertOrUpdate<T> SetIdentityColumn(Expression<Func<T, object>> columnName, ColumnDirectionType outputIdentity)
+        {
+            base.SetIdentity(columnName, outputIdentity);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the identity column for the table. Required if an Identity column exists in table and one of the two 
+        /// following conditions is met: (1) MatchTargetOn list contains an identity column (2) AddAllColumns is used in setup. 
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <param name="outputIdentity"></param>
+        /// <returns></returns>
+        public BulkInsertOrUpdate<T> SetIdentityColumn(string columnName, ColumnDirectionType outputIdentity)
         {
             base.SetIdentity(columnName, outputIdentity);
             return this;

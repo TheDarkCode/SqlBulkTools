@@ -110,6 +110,26 @@ namespace SqlBulkTools
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="columnName"></param>
+        /// <exception cref="SqlBulkToolsException"></exception>
+        protected void SetIdentity(string columnName)
+        {
+
+            if (columnName == null)
+                throw new SqlBulkToolsException("SetIdentityColumn column name can't be null");
+
+            if (_identityColumn == null)
+                _identityColumn = columnName;
+
+            else
+            {
+                throw new SqlBulkToolsException("Can't have more than one identity column");
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="parameterToCheck"></param>
         /// <typeparam name="TParameter"></typeparam>
         /// <returns></returns>
@@ -126,6 +146,17 @@ namespace SqlBulkTools
         /// <param name="columnName"></param>
         /// <param name="outputIdentity"></param>
         protected void SetIdentity(Expression<Func<T, object>> columnName, ColumnDirectionType outputIdentity)
+        {
+            _outputIdentity = outputIdentity;
+            SetIdentity(columnName);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <param name="outputIdentity"></param>
+        protected void SetIdentity(string columnName, ColumnDirectionType outputIdentity)
         {
             _outputIdentity = outputIdentity;
             SetIdentity(columnName);

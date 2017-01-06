@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Threading;
 using System.Transactions;
 using NUnit.Framework;
@@ -60,6 +63,7 @@ namespace SqlBulkTools.IntegrationTests
 
             Assert.AreEqual(rows * RepeatTimes, _db.Books.Count());
         }
+
 
         [TestCase(1000)]
         public void SqlBulkTools_BulkInsert_WithAllColumns(int rows)

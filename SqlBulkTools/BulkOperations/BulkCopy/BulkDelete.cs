@@ -63,6 +63,23 @@ namespace SqlBulkTools
         }
 
         /// <summary>
+        /// At least one MatchTargetOn is required for correct configuration. MatchTargetOn is the matching clause for evaluating 
+        /// each row in table. This is usally set to the unique identifier in the table (e.g. Id). Multiple MatchTargetOn members are allowed 
+        /// for matching composite relationships. 
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <returns></returns>
+        public BulkDelete<T> MatchTargetOn(string columnName)
+        {
+            if (columnName == null)
+                throw new NullReferenceException("MatchTargetOn column name can't be null.");
+
+            _matchTargetOn.Add(columnName);
+
+            return this;
+        }
+
+        /// <summary>
         /// Only delete records when the target satisfies a speicific requirement. This is used in conjunction with MatchTargetOn.
         /// See help docs for examples.  
         /// </summary>
@@ -93,9 +110,34 @@ namespace SqlBulkTools
         /// following conditions is met: (1) MatchTargetOn list contains an identity column (2) AddAllColumns is used in setup. 
         /// </summary>
         /// <param name="columnName"></param>
+        /// <returns></returns>
+        public BulkDelete<T> SetIdentityColumn(string columnName)
+        {
+            base.SetIdentity(columnName);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the identity column for the table. Required if an Identity column exists in table and one of the two 
+        /// following conditions is met: (1) MatchTargetOn list contains an identity column (2) AddAllColumns is used in setup. 
+        /// </summary>
+        /// <param name="columnName"></param>
         /// <param name="outputIdentity"></param>
         /// <returns></returns>
         public BulkDelete<T> SetIdentityColumn(Expression<Func<T, object>> columnName, ColumnDirectionType outputIdentity)
+        {
+            base.SetIdentity(columnName, outputIdentity);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the identity column for the table. Required if an Identity column exists in table and one of the two 
+        /// following conditions is met: (1) MatchTargetOn list contains an identity column (2) AddAllColumns is used in setup. 
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <param name="outputIdentity"></param>
+        /// <returns></returns>
+        public BulkDelete<T> SetIdentityColumn(string columnName, ColumnDirectionType outputIdentity)
         {
             base.SetIdentity(columnName, outputIdentity);
             return this;
